@@ -1,35 +1,35 @@
-"""
-Fichier de configuration global pour pytest
+"""Fichier de configuration global pour pytest.
 
-Ce fichier définit des "fixtures" réutilisables pour les test
+Ce fichier définit des 'fixtures' réutilisables pour les tests.
 """
+
 import pytest
 from triangulator.app import app as flask_app
 
+
 @pytest.fixture(scope="session")
 def app():
+    """Fixture pour fournir une instance de l'application Flask.
+
+    Configurée pour le mode 'TESTING'.
     """
-    Fixture pour fournir une instance de l'application Flask
-    Configurée pour le mode "TESTING"
-    """
-    #configure l'application pour les tests
-    #cela désactive par exemple les messages d'erreur HTML au profit d'exceptions
+    # Configure l'application pour les tests
+    # Cela désactive par exemple les messages d'erreur HTML au profit d'exceptions
     flask_app.config.update({
         "TESTING": True,
     })
 
     # "yield" est comme un "return" pour les fixtures
-    #il fournit l'objet 'flask_app' au test
+    # Il fournit l'objet 'flask_app' au test
     yield flask_app
-    
+
 
 @pytest.fixture(scope="function")
 def client(app):
+    """Fixture pour fournir un 'client de test' Flask.
+
+    Permet de simuler des requêtes HTTP (GET, POST...) sur l'app.
+    'scope="function"' signifie qu'un nouveau client est créé pour chaque test.
     """
-    Fixture pour fournir un "client de test" Flask
-    Permet de simuler des requétes HTTP (GET, POST...) sur l'app
-    
-    'scope="function"' signifie qu'un nouveau client est créé pour chaque fonction de test
-    """
-    #crée un client de test à partir de l'application
+    # Crée un client de test à partir de l'application
     return app.test_client()
